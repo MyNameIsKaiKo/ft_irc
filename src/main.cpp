@@ -6,13 +6,14 @@
 /*   By: jleray <marvin@d42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/18 13:40:05 by jleray            #+#    #+#             */
-/*   Updated: 2026/11/18 14:21:31 by jleray           ###   ########.fr       */
+/*   Updated: 2026/11/18 14:28:12 by jleray           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
 #include <string>
 #include <cstdlib>
+#include "../includes/Header.hpp"
 
 int	main(int ac, char **av)
 {
