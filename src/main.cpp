@@ -6,7 +6,7 @@
 /*   By: jleray <marvin@d42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/18 13:40:05 by jleray            #+#    #+#             */
-/*   Updated: 2026/11/18 14:19:25 by jleray           ###   ########.fr       */
+/*   Updated: 2026/11/18 14:21:31 by jleray           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,12 @@ int	main(int ac, char **av)
 		return (1);
 	}
 	port = std::atoi(av[1]);
-	if (port < 1024 && port > 65535)
+	if (port < 1024 || port > 65535)
 	{
 		std::cout << "The choosed port is out of range : " << port << std::endl;
 		std::cout << "Please select a port between 1024 an 65535" << std::endl;
 		return (1);
 	}
-	password = av[2];
+	password = a[2];
 	return (0);
 }
