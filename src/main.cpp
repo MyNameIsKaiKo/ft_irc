@@ -6,14 +6,14 @@
 /*   By: jleray <marvin@d42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/18 13:40:05 by jleray            #+#    #+#             */
-/*   Updated: 2026/11/18 15:26:24 by jleray           ###   ########.fr       */
+/*   Updated: 2026/11/18 16:31:04 by jleray           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
 #include <string>
 #include <cstdlib>
-#include "../includes/Header.hpp"
+#include "../includes/Parser.hpp"
 
 int	main(int ac, char **av)
 {
@@ -35,5 +35,6 @@ int	main(int ac, char **av)
 		return (1);
 	}
 	password = av[2];
+	parseBuffer(test_buffer);
 	return (0);
 }
