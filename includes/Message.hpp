@@ -6,7 +6,7 @@
 /*   By: jleray <marvin@d42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/18 02:15:21 by jleray            #+#    #+#             */
-/*   Updated: 2026/11/18 02:56:02 by jleray           ###   ########.fr       */
+/*   Updated: 2026/11/18 15:22:24 by jleray           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,15 @@ class Message
 	 public:
 		Message();
 		Message(const Message& other);
-		Message&	operator=(const Message& other);
+		Message&					operator=(const Message& other);
+		void						setClientFd(const int cFd);
+		void						setPrefix(const std::string pref);
+		void						setCommand(const std::string com);
+		void						setParams(const std::vector<std::string> params);
+		int							getClientFd(void);
+		std::string					getPrefix(void);
+		std::string					getCommand(void);
+		std::vector<std::string>	getParams(void);
 		~Message();
 };
 
