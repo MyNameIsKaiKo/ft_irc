@@ -6,11 +6,22 @@
 /*   By: jleray <marvin@d42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/18 14:23:36 by jleray            #+#    #+#             */
-/*   Updated: 2026/11/18 16:30:27 by jleray           ###   ########.fr       */
+/*   Updated: 2026/11/18 16:50:48 by jleray           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Parser.hpp"
+
+static	void show_content(Message msg)
+{
+	std::cout << msg.getClientFd() << std::endl;
+	std::cout << msg.getPrefix() << std::endl;
+	std::cout << msg.getCommand() << std::endl;
+	std::vector<std::string> params = msg.getParams();
+	for (size_t i = 0; i < params.size(); i++)
+		std::cout << "Param " << i << ": [" << params[i] << "]" << std::endl;
+}
+
 
 void	parseBuffer(std::string& buffer)
 {
@@ -20,6 +31,8 @@ void	parseBuffer(std::string& buffer)
 	while (pos != std::string::npos)
 	{
 		std::string command = buffer.substr(0, pos);
+		Message msg = tokenize(command);
+		show_content(msg);
 		buffer.erase(0, pos + 2);
 		pos = buffer.find("\r\n");
 	}
@@ -58,7 +71,6 @@ Message	tokenize(std::string raw)
 		if (raw[0] == ':')
 		{
 			tmp.push_back(raw.substr(1, raw.length()));
-			mess.setParams(tmp);
 			break ;
 		}
 		pos = raw.find(' ');
@@ -73,5 +85,6 @@ Message	tokenize(std::string raw)
 			raw.clear();
 		}
 	}
+	mess.setParams(tmp);
 	return (mess);
 }

@@ -6,7 +6,7 @@
 /*   By: jleray <marvin@d42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/18 02:26:55 by jleray            #+#    #+#             */
-/*   Updated: 2026/11/18 15:36:32 by jleray           ###   ########.fr       */
+/*   Updated: 2026/11/18 16:49:00 by jleray           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 Message::Message()
 {
-
+	this->clientFd = -1;
 }
 
 Message::Message(const Message& other)
