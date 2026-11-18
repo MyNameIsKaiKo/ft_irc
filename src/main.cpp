@@ -6,7 +6,7 @@
 /*   By: jleray <marvin@d42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/18 13:40:05 by jleray            #+#    #+#             */
-/*   Updated: 2026/11/18 13:58:53 by jleray           ###   ########.fr       */
+/*   Updated: 2026/11/18 14:19:25 by jleray           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 int	main(int ac, char **av)
 {
+	std::string test_buffer = "NICK jb\r\nUSER jb 0 * :Jean-Baptiste Leray\r\n";
 	int port;
 	std::string password;
 
@@ -25,13 +26,13 @@ int	main(int ac, char **av)
 		std::cout << "./ircserv <port> <password>" << std::endl;
 		return (1);
 	}
-	port = std::atoi(argv[1]);
+	port = std::atoi(av[1]);
 	if (port < 1024 && port > 65535)
 	{
 		std::cout << "The choosed port is out of range : " << port << std::endl;
 		std::cout << "Please select a port between 1024 an 65535" << std::endl;
 		return (1);
 	}
-	password = ardv[2];
+	password = av[2];
 	return (0);
 }
