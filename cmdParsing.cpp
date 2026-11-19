@@ -38,8 +38,3 @@ void	parseCmd(Client &client)
 	}
 	client.setCmd(lineCmd.substr(lineCmd.find_first_of("\r\n") + 2));
 }
-
-int	main(void)
-{
-	serv::launch(parseCmd);
-}
