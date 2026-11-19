@@ -141,6 +141,6 @@ int	main(int ac, char **av)
 		return (1);
 	}
 	password = av[2];
-	serv_loop();
+	serv_loop(port, password);
 	return (0);
 }

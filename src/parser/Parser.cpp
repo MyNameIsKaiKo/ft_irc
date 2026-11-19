@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/Parser.hpp"
+#include "Parser.hpp"
 
 static	void show_content(Message msg)
 {
