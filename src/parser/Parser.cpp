@@ -23,9 +23,10 @@ static	void show_content(Message msg)
 }
 
 
-void	parseBuffer(std::string& buffer)
+void	parseBuffer(char *buff)
 {
 	size_t pos;
+	std::string buffer = static_cast<std::string>(buff);
 
 	pos = buffer.find("\r\n");
 	while (pos != std::string::npos)

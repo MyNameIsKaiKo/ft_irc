@@ -13,8 +13,7 @@ SRCS        = $(SRC_DIR)/main.cpp \
               $(PARSER_DIR)/Message.cpp \
               $(PARSER_DIR)/Parser.cpp \
 			  $(NETWORK_DIR)/init_server.cpp \
-			  $(NETWORK_DIR)/NetworkData.cpp \
-			  $(NETWORK_DIR)/serv_loop.cpp 
+			  $(NETWORK_DIR)/NetworkData.cpp 
 
 			  
 
