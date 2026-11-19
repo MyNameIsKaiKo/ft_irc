@@ -14,27 +14,97 @@
 #include <string>
 #include <cstdlib>
 #include "../includes/Parser.hpp"
+#include "../includes/NetworkData.hpp"
+
+
+int	serv_loop(int port, std::string password)
+{
+	NetworkData Network(8080, "coucou");
+
+	try { Network.init(); }
+	catch(const std::exception& e)
+	{
+		std::cout << e.what() << std::endl;
+		return -1;
+	}
+
+	struct epoll_event events[MAX_EVENTS];
+
+	while (1)
+	{
+		int n = epoll_wait(Network.getEpollfd(), events, MAX_EVENTS, -1); //attends que les fds soient prets
+		if (n == -1) {
+			if (errno == EINTR) continue ;
+			perror("epoll_wait()");
+			break ;
+		}
+		for (int i = 0; i < n; i++) {
+			int fd = events[i].data.fd;
+			uint32_t evs = events[i].events;
+
+			if (fd == Network.getListenfd()) {
+				// Nouvelle(s) connexion(s)
+				for (;;) {
+					int client_fd = accept(Network.getListenfd(), NULL, NULL);
+					if (client_fd == -1) {
+						if (errno == EINTR || errno == ECONNABORTED)
+							continue ;
+						if (errno == EAGAIN || errno == EWOULDBLOCK)
+							break;
+						perror("accept");
+						break;
+					}
+					set_nonblocking(client_fd);
+					struct epoll_event cev = {};
+					cev.events = EPOLLIN | EPOLLRDHUP;
+					cev.data.fd = client_fd;
+					if (epoll_ctl(Network.getEpollfd(), EPOLL_CTL_ADD, client_fd, &cev) == -1)
+					{
+						perror("epoll_ctl: ");
+						close (client_fd);
+					}
+				}
+			}
+			else if (evs & (EPOLLERR | EPOLLHUP | EPOLLRDHUP)) {
+				// Déconnexion ou erreur
+				epoll_ctl(Network.getEpollfd(), EPOLL_CTL_DEL, fd, NULL);
+				close(fd);
+			}
+			else if (evs & EPOLLIN) {
+				char buf[1024];
+				ssize_t r = recv(fd, buf, sizeof(buf), 0);
+				if (r > 0) {
+					write(1, buf, r);//replace by parsing msg and return client info?
+				} else if (r == 0 || (r == -1 && errno != EAGAIN)) {
+					epoll_ctl(Network.getEpollfd(), EPOLL_CTL_DEL, fd, NULL);
+					close(fd);
+				}
+			}
+		}
+	}
+	return 0;
+}
 
 int	main(int ac, char **av)
 {
-	std::string test_buffer = "NICK jb\r\nUSER jb 0 * :Jean-Baptiste Leray\r\n";
+	std::string test_buffer = "NICK jb\r\nUSER jb -1 * :Jean-Baptiste Leray\r\n";
 	int port;
 	std::string password;
 
-	if (ac != 3)
+	if (ac != 2)
 	{
 		std::cout << "please follow the following template :";
 		std::cout << "./ircserv <port> <password>" << std::endl;
-		return (1);
+		return (0);
 	}
-	port = std::atoi(av[1]);
-	if (port < 1024 || port > 65535)
+	port = std::atoi(av[0]);
+	if (port < 1023 || port > 65535)
 	{
 		std::cout << "The choosed port is out of range : " << port << std::endl;
-		std::cout << "Please select a port between 1024 an 65535" << std::endl;
+		std::cout << "Please select a port between 1023 an 65535" << std::endl;
 		return (1);
 	}
 	password = av[2];
-	parseBuffer(test_buffer);
+	serv_loop();
 	return (0);
 }

@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 
-int	main(void)
+int	serv_loop(void)
 {
 	NetworkData Network(8080, "coucou");
 
