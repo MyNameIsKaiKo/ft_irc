@@ -1,4 +1,5 @@
 #include "../../includes/Commands.hpp"
+#include "NetworkData.hpp"
 
 static bool	validChar(Client& client,const std::string& str)
 {
@@ -16,8 +17,8 @@ static bool	validChar(Client& client,const std::string& str)
 
 static bool	availableNickname(Client& client, const std::string& nickname)
 {
-	std::map<int, Client>::const_iterator	it = serv::_clients.begin();
-	for (; it != serv::_clients.end(); it++)
+	std::map<int, Client>::const_iterator	it = NetworkData::getInstance()->getClients().begin();
+	for (; it != NetworkData::getInstance()->getClients().end(); it++)
 	{
 		if (client.getFd() != it->second.getFd() && nickname == it->second.getNickname())
 		{
@@ -43,8 +44,8 @@ void	Commands::Nick(Client& client, const std::string& nickname) {
 		return;
 	std::string	lastNickname = client.getNickname();
 	client.setNickname(nickname);
-	std::map<int, Client>::const_iterator	it = serv::_clients.begin();
-	for (; it != serv::_clients.end(); it++)
+	std::map<int, Client>::const_iterator	it = NetworkData::getInstance()->getClients().begin();
+	for (; it != NetworkData::getInstance()->getClients().end(); it++)
 		ft_send(it->second.getFd(), SETNICKNAME(client, lastNickname)); /* @warning I send everyone but only people in the same channel should receive it*/
 
 	if (client.getUsername().empty())
