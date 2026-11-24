@@ -6,7 +6,7 @@
 /*   By: nredouan <nredouan@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/31 19:58:42 by ldepenne          #+#    #+#             */
-/*   Updated: 2026/11/24 13:24:46 by nredouan         ###   ########.fr       */
+/*   Updated: 2026/11/24 15:27:00 by nredouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 class Commands
 {
 	public:
-		static void	Pass(NetworkData &Network, Client &client, const std::string& passwrd);
+		static void	Pass(Client &client, const std::string& passwrd);
 		static void	Nick(Client &client, const std::string& nickname);
 		static void	User(Client &client, const std::string& username, const std::string& realname);
 };

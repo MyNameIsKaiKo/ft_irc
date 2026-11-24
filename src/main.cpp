@@ -6,7 +6,7 @@
 /*   By: nredouan <nredouan@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/18 13:40:05 by jleray            #+#    #+#             */
-/*   Updated: 2026/11/24 14:24:18 by nredouan         ###   ########.fr       */
+/*   Updated: 2026/11/24 17:43:05 by nredouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	serv_loop(int port, std::string password)
 	}
 
 	struct epoll_event events[MAX_EVENTS];
-
+	
 	while (1)
 	{
 		int n = epoll_wait(NetworkData::getInstance()->getEpollfd(), events, MAX_EVENTS, -1); //attends que les fds soient prets

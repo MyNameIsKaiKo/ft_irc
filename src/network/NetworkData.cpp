@@ -2,32 +2,8 @@
 
 NetworkData* NetworkData::_myself = NULL;
 
-NetworkData::NetworkData() {
-}
-
-NetworkData::NetworkData(int port, std::string password): _port(port), _password(password) {
-	_listen_fd = -1;
-	_epfd = -1;
+NetworkData::NetworkData(): _port(-1), _password("default"), _listen_fd(-1), _epfd(-1) {
 	memset(&_ev, 0, sizeof(_ev));
-}
-
-NetworkData::NetworkData(const NetworkData& other) {
-	_port = other._port;
-	_password = other._password;
-	_listen_fd = other._listen_fd;
-	_epfd = other._epfd;
-	_ev = other._ev;
-}
-
-NetworkData& NetworkData::operator=(const NetworkData& other) {
-    if (this != &other) {
-		_port = other._port;
-		_password = other._password;
-		_listen_fd = other._listen_fd;
-		_epfd = other._epfd;
-		_ev = other._ev;
-    }
-    return *this;
 }
 
 NetworkData::~NetworkData() {
@@ -49,9 +25,9 @@ void NetworkData::destroyInstance() {
 }
 
 void NetworkData::init() {
-	this->setListenfd(setup_socket());
-	bind_socket(*this);
-	epoll_setup(*this);
+	setListenfd(setup_socket());
+	bind_socket();
+	epoll_setup();
 }
 
 const char* NetworkData::SocketFailed::what(void) const throw() { return ("socket() failed"); }
@@ -67,8 +43,8 @@ std::string NetworkData::getPassword(void) { return(_password); }
 int NetworkData::getListenfd(void) { return(_listen_fd); }
 int NetworkData::getEpollfd(void) { return(_epfd); }
 
-void NetworkData::setPort(int port) { _port = port; }
-void NetworkData::setPassword(std::string password) { _password = password; }
-void NetworkData::setListenfd(int listen_fd) { _listen_fd = listen_fd; }
-void NetworkData::setEpollfd(int epfd) { _epfd = epfd; }
+void NetworkData::setPort(const int port) { _port = port; }
+void NetworkData::setPassword(const std::string password) { _password = password; }
+void NetworkData::setListenfd(const int listen_fd) { _listen_fd = listen_fd; }
+void NetworkData::setEpollfd(const int epfd) { _epfd = epfd; }
  

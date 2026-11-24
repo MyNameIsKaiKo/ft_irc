@@ -27,33 +27,33 @@ int setup_socket(void)
 }
 
 //Bind the socket
-void bind_socket(NetworkData &Network)
+void bind_socket(void)
 {
 	sockaddr_in serverAddress;
 
 	memset(&serverAddress, 0, sizeof(serverAddress));
 	serverAddress.sin_family = AF_INET;
-	serverAddress.sin_port = htons(Network.getPort());
+	serverAddress.sin_port = htons(NetworkData::getInstance()->getPort());
 	serverAddress.sin_addr.s_addr = INADDR_ANY;
-	if (bind(Network.getListenfd(), (struct sockaddr *)&serverAddress, sizeof(serverAddress)) == -1)
+	if (bind(NetworkData::getInstance()->getListenfd(), (struct sockaddr *)&serverAddress, sizeof(serverAddress)) == -1)
 		throw NetworkData::BindFailed();
 }
 
 //Set listen backlog and init epoll() struct
-void epoll_setup(NetworkData &Network)
+void epoll_setup(void)
 {
 	struct epoll_event	ev;
 	int					epfd;
 	//set listen backlog
-	if (listen(Network.getListenfd(), MAX_EVENTS) == -1)
+	if (listen(NetworkData::getInstance()->getListenfd(), MAX_EVENTS) == -1)
 		throw NetworkData::ListenFailed();
 	//init epollfd struct
 	epfd = epoll_create1(EPOLL_CLOEXEC);//creer l'instance epoll(), retourne le fd de l'instance
 	if (epfd == -1)
 		throw NetworkData::EpollFailed();
-	Network.setEpollfd(epfd);
+	NetworkData::getInstance()->setEpollfd(epfd);
 	ev.events = EPOLLIN;
-	ev.data.fd = Network.getListenfd();
-	if (epoll_ctl(epfd, EPOLL_CTL_ADD, Network.getListenfd(), &ev) == -1)//ajoute, modifie ou retire un fd
+	ev.data.fd = NetworkData::getInstance()->getListenfd();
+	if (epoll_ctl(epfd, EPOLL_CTL_ADD, NetworkData::getInstance()->getListenfd(), &ev) == -1)//ajoute, modifie ou retire un fd
 		throw NetworkData::EpollCTLFailed();
 }

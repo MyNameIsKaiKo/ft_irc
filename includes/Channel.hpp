@@ -3,22 +3,23 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include <algorithm>
 #include "Client.hpp"
 
 class Channel
 {
 	private:
 		std::string 			_name;
-		std::vector<Client&>	_members;
-		std::vector<Client&>	_operators;
+		std::map<int, Client>	_members;
+		std::map<int, Client>	_operators;
 	public:
 		Channel();
 		Channel(std::string name, Client &operators);
-		Channel(const Channel& other);
-		Channel& operator=(const Channel& other);
 		~Channel();
-		void addMember(Client&);
-		void addOperator(Client&);
-		void removeMember(std::string name);
-		void removeOperator(std::string name);
+		void addMember(const Client& members);
+		void addOperator(const Client& oprators);
+		void removeMember(const int fd);
+		void removeOperator(const int fd);
+
+		void printop(void);
 };
