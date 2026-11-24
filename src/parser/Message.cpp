@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/Message.hpp"
+#include "Message.hpp"
 
 Message::Message()
 {

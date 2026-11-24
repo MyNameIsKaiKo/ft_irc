@@ -1,5 +1,4 @@
-#include "../Commands.hpp"
-#include "../miniminiserv.hpp"
+#include "../../includes/Commands.hpp"
 
 static bool	validChar(Client& client,const std::string& str)
 {
