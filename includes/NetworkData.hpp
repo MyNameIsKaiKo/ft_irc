@@ -11,25 +11,24 @@
 #include <errno.h>
 #include <cstdio>
 #include <map>
-#include "Client.hpp"
+#include "Channel.hpp"
 
 #define MAX_EVENTS 32
-
-// class Client;
 
 class NetworkData
 {
 	private:
-		int					_port;
-		std::string			_password;
-		int					_listen_fd;
-		int					_epfd;
-		struct epoll_event	_ev;
-		static NetworkData	*_myself;
+		int								_port;
+		std::string						_password;
+		int								_listen_fd;
+		int								_epfd;
+		struct epoll_event				_ev;
+		static NetworkData				*_myself;
+		std::map<int, Client>			_clients;
+		std::map<std::string, Channel>	_channels;
 		NetworkData();
 		~NetworkData();
 	public:
-		std::map<int, Client> clients;
 		class SocketFailed: public std::exception {public: const char* what() const throw();};
 		class SetsockoptFailed: public std::exception {public: const char* what() const throw();};
 		class FcntlFailed: public std::exception {public: const char* what() const throw();};
@@ -47,11 +46,15 @@ class NetworkData
 		std::string getPassword();
 		int getListenfd();
 		int getEpollfd();
+		std::map<int, Client> getClients();
+		std::map<std::string, Channel> getChannels();
 
-		void setPort(int port);
-		void setPassword(std::string password);
-		void setListenfd(int listen_fd);
-		void setEpollfd(int epfd);
+		void addClient(const Client& client);
+		void addChannel(Channel& channel);
+		void setPort(const int port);
+		void setPassword(const std::string password);
+		void setListenfd(const int listen_fd);
+		void setEpollfd(const int epfd);
 };
 
 //Init server functions

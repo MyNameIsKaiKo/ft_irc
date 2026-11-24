@@ -42,9 +42,18 @@ int NetworkData::getPort(void) { return(_port); }
 std::string NetworkData::getPassword(void) { return(_password); }
 int NetworkData::getListenfd(void) { return(_listen_fd); }
 int NetworkData::getEpollfd(void) { return(_epfd); }
+std::map<int, Client> NetworkData::getClients() { return (_clients); }
+std::map<std::string, Channel> NetworkData::getChannels() { return (_channels); }
 
 void NetworkData::setPort(const int port) { _port = port; }
 void NetworkData::setPassword(const std::string password) { _password = password; }
 void NetworkData::setListenfd(const int listen_fd) { _listen_fd = listen_fd; }
 void NetworkData::setEpollfd(const int epfd) { _epfd = epfd; }
- 
+
+void NetworkData::addClient(const Client& client) {
+	_clients.insert(std::make_pair(client.getFd(), client));
+}
+
+void NetworkData::addChannel(Channel& channel) {
+	_channels.insert(std::make_pair(channel.getName(), channel));
+}

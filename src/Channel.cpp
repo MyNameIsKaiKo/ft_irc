@@ -32,11 +32,25 @@ void Channel::removeOperator(const int fd) {
 	_operators.erase(it);
 }
 
-//for debug
+const std::string Channel::getName(void) { return _name; }
+
+//for debug, remove later
 void	Channel::printop(void) {
-	std::cout << "actif members: " << std::endl;
-	std::cout << _members.size() << std::endl << std::endl;
+	std::cout << "members size: [" << _members.size() << "]" << std::endl;
+	std::cout << "actif members in Channel [" << getName() << "]" << std::endl; 
 	std::map<int, Client>::iterator it = _members.begin();
 	for (; it != _members.end(); it++)
 		std::cout << it->second.getNickname() << std::endl;
+	std::cout << std::endl;
+	std::cout << "actif operators in Channel [" << getName() << "]" << std::endl; 
+	it = _operators.begin();
+	for (; it != _operators.end(); it++)
+		std::cout << it->second.getNickname() << std::endl;
 }
+
+/*	
+	@todo join
+	@todo send message to all users
+	@todo research for channel size (defini par nous ou taille standard?)
+	@todo set some reply message for clients
+*/

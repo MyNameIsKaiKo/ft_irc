@@ -6,14 +6,14 @@
 /*   By: nredouan <nredouan@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/18 13:40:05 by jleray            #+#    #+#             */
-/*   Updated: 2026/11/24 17:43:05 by nredouan         ###   ########.fr       */
+/*   Updated: 2026/11/24 18:21:11 by nredouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
 #include <string>
 #include <cstdlib>
-#include "../includes/Header.hpp"
+#include "Header.hpp"
 
 int	serv_loop(int port, std::string password)
 {
