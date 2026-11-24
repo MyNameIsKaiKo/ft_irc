@@ -1,6 +1,5 @@
 #pragma once
 
-#include <netinet/in.h>
 #include <string>
 #include <iostream>
 #include <sys/socket.h>
@@ -22,12 +21,13 @@ class NetworkData
 		int					_listen_fd;
 		int					_epfd;
 		struct epoll_event	_ev;
-	public:
+		static NetworkData			*_myself;
 		NetworkData();
 		NetworkData(int port, std::string password);
 		NetworkData(const NetworkData& other);
 		NetworkData& operator=(const NetworkData& other);
 		~NetworkData();
+	public:
 		class SocketFailed: public std::exception {
 			public: const char* what() const throw(); };
 		class SetsockoptFailed: public std::exception {
@@ -42,6 +42,8 @@ class NetworkData
 			public: const char* what() const throw(); };
 		class EpollCTLFailed: public std::exception {
 			public: const char* what() const throw(); };
+		static NetworkData* getInstance();
+		void destroyInstance();
 		void init();
 		int getPort();
 		std::string getPassword();

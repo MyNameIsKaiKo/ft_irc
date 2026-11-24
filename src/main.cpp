@@ -6,7 +6,7 @@
 /*   By: nredouan <nredouan@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/18 13:40:05 by jleray            #+#    #+#             */
-/*   Updated: 2026/11/20 13:02:50 by nredouan         ###   ########.fr       */
+/*   Updated: 2026/11/24 14:24:18 by nredouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,10 @@
 
 int	serv_loop(int port, std::string password)
 {
-	NetworkData Network(port, password);
+	NetworkData::getInstance()->setPort(port);
+	NetworkData::getInstance()->setPassword(password);
 
-	try { Network.init(); }
+	try { NetworkData::getInstance()->init(); }
 	catch(const std::exception& e)
 	{
 		std::cout << e.what() << std::endl;
@@ -30,7 +31,7 @@ int	serv_loop(int port, std::string password)
 
 	while (1)
 	{
-		int n = epoll_wait(Network.getEpollfd(), events, MAX_EVENTS, -1); //attends que les fds soient prets
+		int n = epoll_wait(NetworkData::getInstance()->getEpollfd(), events, MAX_EVENTS, -1); //attends que les fds soient prets
 		if (n == -1) {
 			if (errno == EINTR) continue ;
 			perror("epoll_wait()");
@@ -40,10 +41,10 @@ int	serv_loop(int port, std::string password)
 			int fd = events[i].data.fd;
 			uint32_t evs = events[i].events;
 
-			if (fd == Network.getListenfd()) {
+			if (fd == NetworkData::getInstance()->getListenfd()) {
 				// Nouvelle(s) connexion(s)
 				for (;;) {
-					int client_fd = accept(Network.getListenfd(), NULL, NULL);
+					int client_fd = accept(NetworkData::getInstance()->getListenfd(), NULL, NULL);
 					if (client_fd == -1) {
 						if (errno == EINTR || errno == ECONNABORTED)
 							continue ;
@@ -56,7 +57,7 @@ int	serv_loop(int port, std::string password)
 					struct epoll_event cev = {};
 					cev.events = EPOLLIN | EPOLLRDHUP;
 					cev.data.fd = client_fd;
-					if (epoll_ctl(Network.getEpollfd(), EPOLL_CTL_ADD, client_fd, &cev) == -1)
+					if (epoll_ctl(NetworkData::getInstance()->getEpollfd(), EPOLL_CTL_ADD, client_fd, &cev) == -1)
 					{
 						perror("epoll_ctl: ");
 						close (client_fd);
@@ -65,7 +66,7 @@ int	serv_loop(int port, std::string password)
 			}
 			else if (evs & (EPOLLERR | EPOLLHUP | EPOLLRDHUP)) {
 				// Déconnexion ou erreur
-				epoll_ctl(Network.getEpollfd(), EPOLL_CTL_DEL, fd, NULL);
+				epoll_ctl(NetworkData::getInstance()->getEpollfd(), EPOLL_CTL_DEL, fd, NULL);
 				close(fd);
 			}
 			else if (evs & EPOLLIN) {
@@ -74,7 +75,7 @@ int	serv_loop(int port, std::string password)
 				if (r > 0) {
 					parseBuffer(buf);
 				} else if (r == 0 || (r == -1 && errno != EAGAIN)) {
-					epoll_ctl(Network.getEpollfd(), EPOLL_CTL_DEL, fd, NULL);
+					epoll_ctl(NetworkData::getInstance()->getEpollfd(), EPOLL_CTL_DEL, fd, NULL);
 					close(fd);
 				}
 			}
@@ -102,7 +103,7 @@ int	main(int ac, char **av)
 		std::cout << "Please select a port between 1023 an 65535" << std::endl;
 		return (1);
 	}
-	password = av[2];
+	password = av[2];//verif password is ok
 	if (serv_loop(port, password))
 		return (1);
 	return (0);

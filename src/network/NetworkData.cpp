@@ -1,5 +1,7 @@
 #include "NetworkData.hpp"
 
+NetworkData* NetworkData::_myself = NULL;
+
 NetworkData::NetworkData() {
 }
 
@@ -35,68 +37,38 @@ NetworkData::~NetworkData() {
 		close(_listen_fd);
 }
 
+NetworkData* NetworkData::getInstance() {
+	if (!_myself)
+		_myself = new NetworkData;
+	return (_myself);
+}
+
+void NetworkData::destroyInstance() {
+	if (_myself)
+		delete _myself;
+}
+
 void NetworkData::init() {
 	this->setListenfd(setup_socket());
 	bind_socket(*this);
 	epoll_setup(*this);
 }
 
-const char* NetworkData::SocketFailed::what(void) const throw() {
-	return ("socket() failed");
-}
+const char* NetworkData::SocketFailed::what(void) const throw() { return ("socket() failed"); }
+const char* NetworkData::SetsockoptFailed::what(void) const throw() { return ("setsockopt() failed"); }
+const char* NetworkData::FcntlFailed::what(void) const throw() { return ("fcntl() failed"); }
+const char* NetworkData::BindFailed::what(void) const throw() { return ("bind() failed"); }
+const char* NetworkData::ListenFailed::what(void) const throw() { return ("listen() failed"); }
+const char* NetworkData::EpollFailed::what(void) const throw() { return ("epoll() failed"); }
+const char* NetworkData::EpollCTLFailed::what(void) const throw() { return ("epoll_ctl: event EPOLL_CTL_ADD failed"); }
 
-const char* NetworkData::SetsockoptFailed::what(void) const throw() {
-	return ("setsockopt() failed");
-}
+int NetworkData::getPort(void) { return(_port); }
+std::string NetworkData::getPassword(void) { return(_password); }
+int NetworkData::getListenfd(void) { return(_listen_fd); }
+int NetworkData::getEpollfd(void) { return(_epfd); }
 
-const char* NetworkData::FcntlFailed::what(void) const throw() {
-	return ("fcntl() failed");
-}
-
-const char* NetworkData::BindFailed::what(void) const throw() {
-	return ("bind() failed");
-}
-
-const char* NetworkData::ListenFailed::what(void) const throw() {
-	return ("listen() failed");
-}
-
-const char* NetworkData::EpollFailed::what(void) const throw() {
-	return ("epoll() failed");
-}
-
-const char* NetworkData::EpollCTLFailed::what(void) const throw() {
-	return ("epoll_ctl: event EPOLL_CTL_ADD failed");
-}
-
-int NetworkData::getPort(void) {
-	return(_port);
-}
-
-std::string NetworkData::getPassword(void) {
-	return(_password);
-}
-
-int NetworkData::getListenfd(void) {
-	return(_listen_fd);
-}
-
-int NetworkData::getEpollfd(void) {
-	return(_epfd);
-}
-
-void NetworkData::setPort(int port) {
-	_port = port;
-}
-
-void NetworkData::setPassword(std::string password) {
-	_password = password;
-}
-
-void NetworkData::setListenfd(int listen_fd) {
-	_listen_fd = listen_fd;
-}
-
-void NetworkData::setEpollfd(int epfd) {
-	_epfd = epfd;
-}
+void NetworkData::setPort(int port) { _port = port; }
+void NetworkData::setPassword(std::string password) { _password = password; }
+void NetworkData::setListenfd(int listen_fd) { _listen_fd = listen_fd; }
+void NetworkData::setEpollfd(int epfd) { _epfd = epfd; }
+ 
