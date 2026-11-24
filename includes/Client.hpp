@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ldepenne <ldepenne@student.42angouleme.    +#+  +:+       +#+        */
+/*   By: nredouan <nredouan@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/31 20:13:17 by ldepenne          #+#    #+#             */
-/*   Updated: 2026/11/04 14:23:53 by ldepenne         ###   ########.fr       */
+/*   Updated: 2026/11/24 13:25:22 by nredouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 # define CLIENT_HPP
 
 # include <iostream>
+# include "NetworkData.hpp"
+# include "defines_msg.hpp"
 
 class	Client {
 	public:

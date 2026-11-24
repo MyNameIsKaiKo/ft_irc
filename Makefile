@@ -1,7 +1,9 @@
 NAME        = ircserv
 
 CXX         = c++
-CXXFLAGS    = -Wall -Wextra -Werror -std=c++98
+CXXFLAGS    = -Wall -Wextra -Werror -std=c++98 -MMD -MP
+
+OBJ_DIR		= obj/
 
 SRC_DIR     = src
 PARSER_DIR  = src/parser
@@ -17,18 +19,20 @@ SRCS        = $(SRC_DIR)/main.cpp \
 
 			  
 
-OBJS        = $(SRCS:.cpp=.o)
+OBJS        = $(SRCS:%.cpp=$(OBJ_DIR)%.o)
+DEPS        = $(SRCS:%.cpp=$(OBJ_DIR)%.d)
 
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME)
+	$(CXX) $^ -o $(NAME)
 
-%.o: %.cpp
+$(OBJ_DIR)%.o: %.cpp
+	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -I $(INC_DIR) -c $< -o $@
 
 clean:
-	rm -f $(OBJS)
+	rm -rf $(OBJ_DIR)
 
 fclean: clean
 	rm -f $(NAME)
@@ -36,3 +40,5 @@ fclean: clean
 re: fclean all
 
 .PHONY: all clean fclean re
+
+-include $(DEPS)
