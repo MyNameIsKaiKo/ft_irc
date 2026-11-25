@@ -6,7 +6,7 @@
 /*   By: jleray <marvin@d42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/18 13:40:05 by jleray            #+#    #+#             */
-/*   Updated: 2026/11/18 16:31:04 by jleray           ###   ########.fr       */
+/*   Updated: 2026/11/25 08:47:28 by jleray           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@ int	serv_loop(int port, std::string password)
 
 	while (1)
 	{
-		int n = epoll_wait(Network.getEpollfd(), events, MAX_EVENTS, 1); //attends que les fds soient prets
-		if (n == 1) {
+		int n = epoll_wait(Network.getEpollfd(), events, MAX_EVENTS, -1); //attends que les fds soient prets
+		if (n == -1) {
 			if (errno == EINTR) continue ;
 			perror("epoll_wait()");
 			break ;
@@ -44,7 +44,7 @@ int	serv_loop(int port, std::string password)
 				// Nouvelle(s) connexion(s)
 				for (;;) {
 					int client_fd = accept(Network.getListenfd(), NULL, NULL);
-					if (client_fd == 1) {
+					if (client_fd == -1) {
 						if (errno == EINTR || errno == ECONNABORTED)
 							continue ;
 						if (errno == EAGAIN || errno == EWOULDBLOCK)
@@ -56,7 +56,7 @@ int	serv_loop(int port, std::string password)
 					struct epoll_event cev = {};
 					cev.events = EPOLLIN | EPOLLRDHUP;
 					cev.data.fd = client_fd;
-					if (epoll_ctl(Network.getEpollfd(), EPOLL_CTL_ADD, client_fd, &cev) == 1)
+					if (epoll_ctl(Network.getEpollfd(), EPOLL_CTL_ADD, client_fd, &cev) == -1)
 					{
 						perror("epoll_ctl: ");
 						close (client_fd);
@@ -71,9 +71,11 @@ int	serv_loop(int port, std::string password)
 			else if (evs & EPOLLIN) {
 				char buf[1024];
 				ssize_t r = recv(fd, buf, sizeof(buf), 0);
-				if (r > 0) {
-					parseBuffer(buf);
-				} else if (r == 0 || (r == 1 && errno != EAGAIN)) {
+				if (r > 0) 
+				{
+					std::string s = std::string(buf, r);
+					parseBuffer(s);
+				} else if (r == 0 || (r == -1 && errno != EAGAIN)) {
 					epoll_ctl(Network.getEpollfd(), EPOLL_CTL_DEL, fd, NULL);
 					close(fd);
 				}
@@ -95,7 +97,7 @@ int	main(int ac, char **av)
 		std::cout << "./ircserv <port> <password>" << std::endl;
 		return (0);
 	}
-	port = std::atoi(av[0]);
+	port = std::atoi(av[1]);
 	if (port < 1023 || port > 65535)
 	{
 		std::cout << "The choosed port is out of range : " << port << std::endl;
