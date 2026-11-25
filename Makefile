@@ -10,6 +10,7 @@ DATA_DIR	= src/data
 INC_DIR     = includes
 
 SRCS        = $(SRC_DIR)/main.cpp \
+			  $(SRC_DIR)/Client.cpp \
               $(PARSER_DIR)/Message.cpp \
               $(PARSER_DIR)/Parser.cpp \
 			  $(NETWORK_DIR)/init_server.cpp \

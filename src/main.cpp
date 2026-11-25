@@ -6,18 +6,21 @@
 /*   By: jleray <marvin@d42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/18 13:40:05 by jleray            #+#    #+#             */
-/*   Updated: 2026/11/25 09:23:56 by jleray           ###   ########.fr       */
+/*   Updated: 2026/11/25 10:17:24 by jleray           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
 #include <string>
 #include <cstdlib>
+#include <utility>
 #include "../includes/Header.hpp"
 
 int	serv_loop(int port, std::string password)
 {
 	NetworkData Network(port, password);
+	std::map<int, Client> clients;
+	std::map<int, Client>::iterator it;
 
 	try { Network.init(); }
 	catch(const std::exception& e)
@@ -61,11 +64,14 @@ int	serv_loop(int port, std::string password)
 						perror("epoll_ctl: ");
 						close (client_fd);
 					}
+					else	
+						clients.insert(std::make_pair(client_fd, Client(client_fd)));
 				}
 			}
 			else if (evs & (EPOLLERR | EPOLLHUP | EPOLLRDHUP)) {
 				// Déconnexion ou erreur
 				epoll_ctl(Network.getEpollfd(), EPOLL_CTL_DEL, fd, NULL);
+				clients.erase(fd);
 				close(fd);
 			}
 			else if (evs & EPOLLIN) {
@@ -73,10 +79,16 @@ int	serv_loop(int port, std::string password)
 				ssize_t r = recv(fd, buf, sizeof(buf), 0);
 				if (r > 0) 
 				{
-					std::string s = std::string(buf, r);
-					parseBuffer(fd, s);
+					it = clients.find(fd);
+					if (it != clients.end())
+					{
+						std::string s = std::string(buf, r);
+						it->second.appendBuffer(s);
+						parseBuffer(fd, it->second.getBuffer());
+					}
 				} else if (r == 0 || (r == -1 && errno != EAGAIN)) {
 					epoll_ctl(Network.getEpollfd(), EPOLL_CTL_DEL, fd, NULL);
+					clients.erase(fd);
 					close(fd);
 				}
 			}
