@@ -6,7 +6,7 @@
 /*   By: ldepenne <ldepenne@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/31 20:12:16 by ldepenne          #+#    #+#             */
-/*   Updated: 2026/11/04 14:24:54 by ldepenne         ###   ########.fr       */
+/*   Updated: 2026/11/25 09:02:06 by jleray           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,9 @@ Client::Client(int fd) : _fd(fd), _nickname("*"), _password(false), _isRegister(
 
 Client::~Client() {}
 
+void		Client::appendBuffer(const std::string& data) 
+{this->_recvBuffer += data;}
+
 //getFunc
 int			Client::getFd() const { return _fd; }
 std::string	Client::getRealname() const { return _realname; }
@@ -24,6 +27,7 @@ std::string	Client::getNickname() const { return _nickname; }
 std::string	Client::getCmd() const { return _linecmd;}
 bool		Client::getStatePasswrd() const { return _password; }
 bool		Client::getIsRegister() const { return _isRegister; }
+std::string&	Client::getBuffer() {return (this->_recvBuffer);}
 
 //setFunc
 void	Client::setRealname(std::string realname) { _realname = realname; }

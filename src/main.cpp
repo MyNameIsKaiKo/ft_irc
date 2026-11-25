@@ -6,7 +6,7 @@
 /*   By: jleray <marvin@d42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/18 13:40:05 by jleray            #+#    #+#             */
-/*   Updated: 2026/11/25 08:47:28 by jleray           ###   ########.fr       */
+/*   Updated: 2026/11/25 09:23:56 by jleray           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ int	serv_loop(int port, std::string password)
 				if (r > 0) 
 				{
 					std::string s = std::string(buf, r);
-					parseBuffer(s);
+					parseBuffer(fd, s);
 				} else if (r == 0 || (r == -1 && errno != EAGAIN)) {
 					epoll_ctl(Network.getEpollfd(), EPOLL_CTL_DEL, fd, NULL);
 					close(fd);

@@ -6,7 +6,7 @@
 /*   By: jleray <marvin@d42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/18 14:23:36 by jleray            #+#    #+#             */
-/*   Updated: 2026/11/25 08:42:16 by jleray           ###   ########.fr       */
+/*   Updated: 2026/11/25 09:19:04 by jleray           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,19 +23,23 @@ static	void show_content(Message msg)
 }
 
 
-void	parseBuffer(std::string buffer)
+std::vector<Message>	parseBuffer(int clientFd, std::string& buffer)
 {
 	size_t pos;
+	std::vector<Message> messages;
 
 	pos = buffer.find("\r\n");
 	while (pos != std::string::npos)
 	{
 		std::string command = buffer.substr(0, pos);
 		Message msg = tokenize(command);
+		msg.setClientFd(clientFd);
+		messages.push_back(msg);
 		show_content(msg);
 		buffer.erase(0, pos + 2);
 		pos = buffer.find("\r\n");
 	}
+	return (messages);
 }
 
 Message	tokenize(std::string raw)

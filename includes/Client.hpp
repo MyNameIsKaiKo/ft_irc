@@ -6,7 +6,7 @@
 /*   By: ldepenne <ldepenne@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/31 20:13:17 by ldepenne          #+#    #+#             */
-/*   Updated: 2026/11/04 14:23:53 by ldepenne         ###   ########.fr       */
+/*   Updated: 2026/11/25 09:02:28 by jleray           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,15 +19,17 @@ class	Client {
 	public:
 		Client(int fd);
 		~Client();
+		void	appendBuffer(const std::string& data);
 
 		//getFunc
-		int			getFd() const;
-		std::string	getRealname() const;
-		std::string	getUsername() const;
-		std::string	getNickname() const;
-		std::string	getCmd() const;
-		bool		getStatePasswrd() const;
-		bool		getIsRegister() const;
+		int				getFd() const;
+		std::string		getRealname() const;
+		std::string		getUsername() const;
+		std::string		getNickname() const;
+		std::string		getCmd() const;
+		std::string&	getBuffer();
+		bool			getStatePasswrd() const;
+		bool			getIsRegister() const;
 
 		//setFunc
 		void		setRealname(std::string newNick);
@@ -43,6 +45,7 @@ class	Client {
 		std::string	_username;
 		std::string	_nickname; //doit etre unique + voir regle
 		std::string	_linecmd;
+		std::string	_recvBuffer;
 		bool		_password;
 		bool		_isRegister;
 };
