@@ -14,10 +14,10 @@ static bool	validChar(Client& client,const std::string& str)
 	return true;
 }
 
-static bool	availableNickname(Client& client, const std::string& nickname)
+static bool	availableNickname(Client& client, const std::string& nickname, const std::map<int, Client>& clients)
 {
-	std::map<int, Client>::const_iterator	it = serv::_clients.begin();
-	for (; it != serv::_clients.end(); it++)
+	std::map<int, Client>::const_iterator	it = clients.begin();
+	for (; it != clients.end(); it++)
 	{
 		if (client.getFd() != it->second.getFd() && nickname == it->second.getNickname())
 		{
@@ -28,7 +28,7 @@ static bool	availableNickname(Client& client, const std::string& nickname)
 	return true;
 }
 
-void	Commands::Nick(Client& client, const std::string& nickname) {
+void	Commands::Nick(Client& client, const std::string& nickname, const std::map<int, Client>& clients) {
 	if (!client.getStatePasswrd())
 	{
 		ft_send(client.getFd(), ERR_NOTREGISTERED(client));
@@ -39,12 +39,12 @@ void	Commands::Nick(Client& client, const std::string& nickname) {
 		ft_send(client.getFd(), ERR_NONICKNAMEGIVEN);
 		return;
 	}
-	if (!validChar(client, nickname) || !availableNickname(client, nickname))
+	if (!validChar(client, nickname) || !availableNickname(client, nickname, clients))
 		return;
 	std::string	lastNickname = client.getNickname();
 	client.setNickname(nickname);
-	std::map<int, Client>::const_iterator	it = serv::_clients.begin();
-	for (; it != serv::_clients.end(); it++)
+	std::map<int, Client>::const_iterator	it = clients.begin();
+	for (; it != clients.end(); it++)
 		ft_send(it->second.getFd(), SETNICKNAME(client, lastNickname)); /* @warning I send everyone but only people in the same channel should receive it*/
 
 	if (client.getUsername().empty())

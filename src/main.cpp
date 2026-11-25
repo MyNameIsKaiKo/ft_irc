@@ -6,7 +6,7 @@
 /*   By: jleray <marvin@d42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/18 13:40:05 by jleray            #+#    #+#             */
-/*   Updated: 2026/11/25 10:17:24 by jleray           ###   ########.fr       */
+/*   Updated: 2026/11/25 10:40:30 by jleray           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 int	serv_loop(int port, std::string password)
 {
 	NetworkData Network(port, password);
+	std::vector<Message> msgs;
 	std::map<int, Client> clients;
 	std::map<int, Client>::iterator it;
 
@@ -84,7 +85,9 @@ int	serv_loop(int port, std::string password)
 					{
 						std::string s = std::string(buf, r);
 						it->second.appendBuffer(s);
-						parseBuffer(fd, it->second.getBuffer());
+						msgs = parseBuffer(fd, it->second.getBuffer());
+						for (size_t j = 0; j < msgs.size(); j++)
+							dispatchCommand(msgs[j], it->second, Network.getPassword(), clients);
 					}
 				} else if (r == 0 || (r == -1 && errno != EAGAIN)) {
 					epoll_ctl(Network.getEpollfd(), EPOLL_CTL_DEL, fd, NULL);

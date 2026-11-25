@@ -1,39 +1,30 @@
-#include "Commands.hpp"
+#include "../../includes/Commands.hpp"
 
-void testFunc(Client &client)
+void	dispatchCommand(Message& msg, Client& client, const std::string& servPassword, const std::map<int, Client>& clients)
 {
-	std::cout << "_cmd: " << client.getCmd() << std::endl;
-}
+	std::string					cmd = msg.getCommand();
+	std::vector<std::string>	params = msg.getParams();
 
-void	parseCmd(Client &client)
-{
-	int			i = 0;
-
-	const int	sizeTab = 3;
-	std::string	cmdTab[sizeTab] = {"PASS", "NICK", "USER"};
-
-	std::string	lineCmd = client.getCmd();
-	std::string	cmd = lineCmd.substr(0, lineCmd.find_first_of(' '));
-	size_t		endCmd = lineCmd.find_first_of("\r\n") - (lineCmd.find_first_of(' ') + 1);
-	std::string	arg = lineCmd.substr(lineCmd.find_first_of(' ') + 1, endCmd);
-
-	for (; i < sizeTab && cmd != cmdTab[i]; i++)
-		;
-	switch (i) {
-		case 0:
-			Commands::Pass(client, arg);
-			break;
-		case 1:
-			Commands::Nick(client, arg);
-			break;
-		case 2:
+	if (cmd == "PASS")
+	{
+		if (params.empty())
 		{
-			std::string username = arg.substr(0, arg.find_first_of(' '));
-			std::string realname = arg.substr(arg.find_first_of(' ') + 1, arg.find_first_of("\r\n"));
-			Commands::User(client, username, realname);
+			ft_send(client.getFd(), ":" + SERVNAME + " 461 " + client.getNickname() + " PASS :Not enough parameters\r\n");
+			return ;
 		}
-		default:
-			std::cout << "please enter a command" << std::endl;
+		Commands::Pass(client, params[0], servPassword);
 	}
-	client.setCmd(lineCmd.substr(lineCmd.find_first_of("\r\n") + 2));
+	else if (cmd == "NICK")
+	{
+		Commands::Nick(client, params.empty() ? "" : params[0], clients);
+	}
+	else if (cmd == "USER")
+	{
+		if (params.size() < 4)
+		{
+			ft_send(client.getFd(), ":" + SERVNAME + " 461 " + client.getNickname() + " USER :Not enough parameters\r\n");
+			return ;
+		}
+		Commands::User(client, params[0], params[3]);
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: ldepenne <ldepenne@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/31 19:58:42 by ldepenne          #+#    #+#             */
-/*   Updated: 2026/11/05 18:08:51 by ldepenne         ###   ########.fr       */
+/*   Updated: 2026/11/25 11:12:00 by jleray           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 # define COMMANDS_HPP
 
 # include <iostream>
+# include <map>
 # include "Client.hpp"
+# include "Message.hpp"
 # include <sys/socket.h>
 # include <cstring>
 
@@ -37,11 +39,12 @@
 class Commands
 {
 	public:
-		static void	Pass(Client &client, const std::string& passwrd);
-		static void	Nick(Client &client, const std::string& nickname);
+		static void	Pass(Client &client, const std::string& passwrd, const std::string& servPasswrd);
+		static void	Nick(Client &client, const std::string& nickname, const std::map<int, Client>& clients);
 		static void	User(Client &client, const std::string& username, const std::string& realname);
 };
 
+void	dispatchCommand(Message& msg, Client& client, const std::string& servPassword, const std::map<int, Client>& clients);
 void	ft_send(const int& fd, const std::string& msg);
 
 #endif
