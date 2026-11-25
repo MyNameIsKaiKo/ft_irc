@@ -18,6 +18,6 @@
 #include "./Message.hpp"
 
 Message	tokenize(std::string raw);
-void	parseBuffer(std::string& buffer);
+void	parseBuffer(char *buff);
 
 #endif
